@@ -47,8 +47,6 @@ The testbench is built using Object-Oriented SystemVerilog, mirroring standard U
 
 ## 📊 Results & Coverage
 
-## 📊 Results & Verification Metrics
-
 ### 1. Split-Agent Transaction Log & Scoreboard Execution
 The testbench terminal output demonstrates the independent read and write threads operating concurrently. The associative array reference memory model successfully allocates and retains memory state dynamically across randomized transactions. 
 
@@ -78,7 +76,8 @@ The simulation confirms perfect interleaving of read and write channels, with pr
 ### 3.  Functional Coverage (93.19%)
 Coverage was driven by fully randomized, high-volume packet generation (`repeat(250)`). Custom covergroups tracked the distribution of addresses, byte strobes, and crucial corner cases like **Read-After-Write** hits. 
 
-Detailed Coverage report: !(sim/cov_report.txt)
+[Detailed Coverage report](sim/cov_report.txt)
+
 
 *Cross-coverage matrix specifically tracked the Cartesian product of address divisions against strobe combinations, filtering out invalid architectural states.*
 
