@@ -47,20 +47,45 @@ The testbench is built using Object-Oriented SystemVerilog, mirroring standard U
 
 ## 📊 Results & Coverage
 
-### Waveform Analysis
+## 📊 Results & Verification Metrics
+
+### 1. Split-Agent Transaction Log & Scoreboard Execution
+The testbench terminal output demonstrates the independent read and write threads operating concurrently. The associative array reference memory model successfully allocates and retains memory state dynamically across randomized transactions. 
+
+**Highlight: Dynamic Read-After-Write Collision**
+Notice in the log snippet below how `WID = 1` writes to address `b3` at time `20000`. Later, at time `180000`, `RID = 5` randomly generates a read for that exact same address, which the Scoreboard successfully catches and verifies.
+
+```log
+# 20000, --[DRIVER] WAITING FOR NEW WRITE PACKET--
+# 20000: [DRIVER] WID = 1, wr_en = 1, w_addr = b3, w_data = e96e28a5, w_strobe = 1111, w_resp = 00
+# 20000, --[DRIVER] WAITING FOR NEW READ PACKET--
+# 20000: [DRIVER] RID = 1, rd_en = 1, r_addr = 74, r_data = 0, r_resp = 0
+...
+# 60000: [SCOREBOARD / WRITE] WID = 1, wr_en = 1, w_addr = b3, w_data = e96e28a5, w_strobe = 1111, w_resp = 00
+# 60000, [SCOREBOARD] WRITE COMPLETE! W_ADDR = b3, W_DATA = e96e28a5 
+...
+# 180000: [DRIVER] RID = 5, rd_en = 1, r_addr = b3, r_data = 0, r_resp = 0
+# 180000: [DRIVER] WID = 5, wr_en = 1, w_addr = 5c, w_data = 78e476d4, w_strobe = 1111, w_resp = 00
+...
+# 220000: [SCOREBOARD / READ] RID = 5, rd_en = 1, r_addr = b3, r_data = e96e28a5, r_resp = 0
+# 220000, [SCOREBOARD] READ COMPLETE (AFTER WRITE)! R_ADDR = b3, R_DATA = e96e28a5
+```
+### 2. Waveform Analysis
 The simulation confirms perfect interleaving of read and write channels, with properly synchronized transaction IDs (`WID`/`RID`) and valid/ready handshakes.
 
 ![Functional Check Waveform](docs/function_check_waveform.png)
 
-### Functional Coverage (93.19%)
+### 3.  Functional Coverage (93.19%)
 Coverage was driven by fully randomized, high-volume packet generation (`repeat(250)`). Custom covergroups tracked the distribution of addresses, byte strobes, and crucial corner cases like **Read-After-Write** hits. 
+
+Detailed Coverage report: !(sim/cov_report.txt)
 
 *Cross-coverage matrix specifically tracked the Cartesian product of address divisions against strobe combinations, filtering out invalid architectural states.*
 
 ![Coverage Details 1](docs/coverage_details1.png)
 ![Coverage Details 2](docs/coverage_details2.png)
 
-### SystemVerilog Assertions (SVA)
+### 4. SystemVerilog Assertions (SVA)
 The `axi_if.sv` interface includes continuous background protocol monitoring:
 1. **Valid Stability:** Once a `VALID` signal is asserted, it is strictly held until the corresponding `READY` is received.
 2. **Payload Stability:** Address and Data signals are locked using `$stable` during wait states to prevent bus corruption.
