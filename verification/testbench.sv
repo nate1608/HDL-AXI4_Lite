@@ -136,8 +136,8 @@ endinterface
 
 
 class driver;
-	mailbox wr_drv_mbx;
-	mailbox rd_drv_mbx;
+	mailbox #(write_packet) wr_drv_mbx;
+	mailbox #(read_packet) rd_drv_mbx;
 
 	virtual tb_if vif;
 	event wr_done;
@@ -184,8 +184,8 @@ class driver;
 endclass
 
 class monitor;
-	mailbox wr_scb_mbx;
-	mailbox rd_scb_mbx;
+	mailbox #(write_packet) wr_scb_mbx;
+	mailbox #(read_packet) rd_scb_mbx;
 
 	virtual tb_if vif;
 	event wr_done;
@@ -268,8 +268,8 @@ class generator;
 	write_packet w_item;
 	read_packet r_item;
 
-	mailbox wr_drv_mbx;
-	mailbox rd_drv_mbx;
+	mailbox #(write_packet) wr_drv_mbx;
+	mailbox #(read_packet) rd_drv_mbx;
 
 	logic [`ADDR_WIDTH - 1:0] written_addr[$];
 
@@ -317,8 +317,8 @@ endclass
 	
 
 class scoreboard;
-	mailbox rd_scb_mbx;
-	mailbox wr_scb_mbx;
+	mailbox  #(read_packet) rd_scb_mbx;
+	mailbox #(write_packet) wr_scb_mbx;
 
 	logic rd_after_wr_once;
 
@@ -413,8 +413,8 @@ endclass
 
 
 class environment;
-	mailbox wr_scb_mbx;
-	mailbox rd_scb_mbx;
+	mailbox #(write_packet) wr_scb_mbx;
+	mailbox #(read_packet) rd_scb_mbx;
 
 	virtual tb_if vif;
 	event wr_done;
@@ -461,8 +461,8 @@ endclass
 
 
 class test;
-	mailbox rd_drv_mbx;
-	mailbox wr_drv_mbx;
+	mailbox #(read_packet) rd_drv_mbx;
+	mailbox #(write_packet) wr_drv_mbx;
 
 	generator g0;
 	environment e0;
@@ -546,7 +546,6 @@ module top;
 	end
 
 endmodule
-
 
 
 
