@@ -6,7 +6,7 @@ An end-to-end implementation and verification of a custom AMBA AXI4-Lite memory-
 
 ## 📌 Project Highlights
 * **Custom RTL Design:** Implemented AXI4-Lite Manager and Subordinate FSMs enforcing strict, single-outstanding-transaction in-order completion.
-* **Split-Agent Architecture:** Decoupled Read and Write threads in the Driver and Monitor using parameterized mailboxes (`#(write_packet)` and `#(read_packet)`).
+* **Split-Agent Architecture:** Decoupled Read and Write threads in the Driver and Monitor using dedicated, independent parameterized mailboxes (`#(write_packet)` and `#(read_packet)`) to prevent channel blocking and simulate true concurrency. 
 * **Closed-Loop Synchronization:** Implemented dynamic event-triggering (`->wr_done` / `@(wr_done)`) between the Scoreboard/Monitor and Generator to prevent FIFO flooding and precisely control simulation scaling.
 * **Sparse Memory Modeling:** Built an associative array reference memory model inside the Scoreboard to handle massive address spaces safely without uninitialized `X` propagation.
 * **Metric-Driven Verification:** Achieved **93.19% Global Functional Coverage** utilizing custom cross-coverage bins (address ranges × byte strobes) and Cartesian product pruning (`ignore_bins`).
