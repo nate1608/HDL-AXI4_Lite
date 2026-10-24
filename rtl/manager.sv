@@ -1,7 +1,7 @@
 `timescale 1ns/1ps
 
 `define  DATA_WIDTH 32 //bits
-`define ADDR_WIDTH 8
+`define ADDR_WIDTH 12
 
 
 module manager(	axi_if.manager_mp _if, 
