@@ -1,7 +1,7 @@
 `timescale 1ns/1ps
 
 `define DATA_WIDTH 32
-`define ADDR_WIDTH 8
+`define ADDR_WIDTH 12
 
 
 interface axi_if(input bit clk , input bit rstn);
