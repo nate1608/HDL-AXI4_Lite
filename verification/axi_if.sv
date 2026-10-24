@@ -110,18 +110,34 @@ interface axi_if(input bit clk , input bit rstn);
     	assert property(p_w_data_stable);
     	assert property(p_ar_addr_stable);
 
-	//ASSERTION TYPE2: B_VALID CAN ONLY OCCUR AFTER AW AND W HANDSHAKES
+int unsigned aw_count, w_count, b_count, ar_count, r_count;
+	always@(posedge clk or negedge rstn) begin
+		if(!rstn) begin
+			aw_count <= 0;
+			w_count <= 0;
+			b_count <=0;
+			ar_count <=0;
+			r_count <=0;
+		end else begin
+			if(AW_VALID && AW_READY) aw_count <= aw_count +1;
+			if(W_VALID && W_READY) w_count <= w_count +1;
+			if(B_VALID && B_READY) b_count <= b_count +1;
+			if(AR_VALID && AR_READY) ar_count <= ar_count +1;
+			if(R_VALID && R_READY) r_count <= r_count +1;
+		end
+	end
+		
+
 	property W_dependency;
 		@(posedge clk) disable iff(!rstn)
-		AW_VALID || W_VALID |-> !B_VALID; //DIDNT WRITE READY COZ VALID DOWN INDICATES HANDSHAKE COMPLETE (EXCEPT RESET CASE)
+		B_VALID |-> ( (aw_count - b_count )>0) && ((w_count-b_count) >0);
 	endproperty
-	
+
 	assert property (W_dependency);
 
-	//ASSERTION TYPE3: R_VALID ONLY AFTER AR HANDSHAKE;
 	property R_dependency;
 		@(posedge clk) disable iff(!rstn)
-		AR_VALID |-> !R_VALID;
+		R_VALID |-> (ar_count-r_count > 0);
 	endproperty
 
 	assert property (R_dependency);
