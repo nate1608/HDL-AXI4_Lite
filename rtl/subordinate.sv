@@ -1,7 +1,7 @@
 `timescale 1ns/1ps
 
 `define  DATA_WIDTH 32 //bits
-`define ADDR_WIDTH 8
+`define ADDR_WIDTH 12
 
 
 module subordinate(axi_if.subordinate_mp _if);
@@ -107,13 +107,13 @@ module subordinate(axi_if.subordinate_mp _if);
                         w_addr <= _if.AW_ADDR;
                   end
             RESP: begin
-                    if(_if.B_VALID && _if.B_READY) begin 
+                   
                         //MEM[w_addr] <= w_data; 
                         for(int i = 0; i < `DATA_WIDTH/8; i++) begin
                             if(w_strb[i]) 
                                 MEM[w_addr>>2][8*i +: 8] <= w_data[8*i +: 8];
                         end
-                    end
+                    
                   end
     endcase
     
