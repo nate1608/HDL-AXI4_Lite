@@ -9,7 +9,7 @@ An end-to-end implementation and verification of a custom AMBA AXI4-Lite memory-
 * **Split-Agent Architecture:** Decoupled Read and Write threads in the Driver and Monitor using dedicated, independent parameterized mailboxes (`#(write_packet)` and `#(read_packet)`) to prevent channel blocking and simulate true concurrency. 
 * **Closed-Loop Synchronization:** Implemented dynamic event-triggering (`->wr_done` / `@(wr_done)`) between the Scoreboard/Monitor and Generator to prevent FIFO flooding and precisely control simulation scaling.
 * **Sparse Memory Modeling:** Built an associative array reference memory model inside the Scoreboard to handle massive address spaces safely without uninitialized `X` propagation.
-* **Metric-Driven Verification:** Achieved **93.19% Global Functional Coverage** utilizing custom cross-coverage bins (address ranges × byte strobes) and Cartesian product pruning (`ignore_bins`).
+* **Metric-Driven Verification:** Achieved **90.83% Global Functional Coverage** utilizing custom cross-coverage bins (address ranges × byte strobes) and Cartesian product pruning (`ignore_bins`).
 * **Protocol Compliance (SVA):** Embedded robust assertions into the interface to mathematically prove valid-stability, payload stability (`$stable`), and handshake causality.
 
 ---
@@ -73,10 +73,10 @@ The simulation confirms perfect interleaving of read and write channels, with pr
 
 ![Functional Check Waveform](docs/function_check_waveform.png)
 
-### 3.  Functional Coverage (93.19%)
+### 3.  Functional Coverage (90.83%)
 Coverage was driven by fully randomized, high-volume packet generation (`repeat(250)`). Custom covergroups tracked the distribution of addresses, byte strobes, and crucial corner cases like **Read-After-Write** hits. 
 
-[Detailed Coverage report](sim/cov_report.txt)
+[Detailed Coverage report](sim/coverage_new.txt)
 
 
 *Cross-coverage matrix specifically tracked the Cartesian product of address divisions against strobe combinations, filtering out invalid architectural states.*
